@@ -5,10 +5,28 @@ from app.models.memecoin import BlockchainType, MemeStatus
 
 # Base Memecoin Schema
 class MemecoinBase(BaseModel):
-    name: str = Field(..., description="Name of the memecoin")
-    symbol: str = Field(..., description="Token symbol")
-    contract_address: str = Field(..., description="Contract address on the blockchain")
-    blockchain: BlockchainType = Field(..., description="Blockchain platform")
+    name: str
+    symbol: str
+    contract_address: str
+    blockchain: BlockchainType
+    
+    # Market Data
+    current_price: Optional[float] = None
+    market_cap: Optional[float] = None
+    total_supply: Optional[float] = None
+    holders_count: Optional[int] = None
+    liquidity_usd: Optional[float] = None
+    
+    # Analysis Scores
+    social_score: Optional[float] = None
+    security_score: Optional[float] = None
+    potential_score: Optional[float] = None
+    
+    # Social Metrics
+    twitter_followers: Optional[int] = None
+    telegram_members: Optional[int] = None
+    social_mentions: Optional[int] = None
+    social_engagement: Optional[int] = None
 
 # Create Request Schema
 class MemecoinCreate(MemecoinBase):
@@ -18,16 +36,19 @@ class MemecoinCreate(MemecoinBase):
 class MemecoinUpdate(BaseModel):
     name: Optional[str] = None
     symbol: Optional[str] = None
-    total_supply: Optional[float] = None
-    circulating_supply: Optional[float] = None
-    holder_count: Optional[int] = None
-    liquidity_usd: Optional[float] = None
-    market_cap_usd: Optional[float] = None
-    contract_verified: Optional[bool] = None
     status: Optional[MemeStatus] = None
+    current_price: Optional[float] = None
+    market_cap: Optional[float] = None
+    total_supply: Optional[float] = None
+    holders_count: Optional[int] = None
+    liquidity_usd: Optional[float] = None
     social_score: Optional[float] = None
-    risk_score: Optional[float] = None
+    security_score: Optional[float] = None
     potential_score: Optional[float] = None
+    twitter_followers: Optional[int] = None
+    telegram_members: Optional[int] = None
+    social_mentions: Optional[int] = None
+    social_engagement: Optional[int] = None
 
 # List Response Schema
 class MemecoinList(MemecoinBase):
@@ -46,23 +67,11 @@ class MemecoinList(MemecoinBase):
 class MemecoinResponse(MemecoinBase):
     id: int
     status: MemeStatus
-    total_supply: Optional[float]
-    circulating_supply: Optional[float]
-    holder_count: Optional[int]
-    liquidity_usd: Optional[float]
-    market_cap_usd: Optional[float]
-    contract_verified: bool
-    creator_address: Optional[str]
-    creation_tx_hash: Optional[str]
-    contract_audit: Optional[dict]
-    social_score: float
-    risk_score: float
-    potential_score: float
     created_at: datetime
-    updated_at: datetime
-    
+    updated_at: Optional[datetime] = None
+
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Price History Schema
 class PriceHistoryBase(BaseModel):

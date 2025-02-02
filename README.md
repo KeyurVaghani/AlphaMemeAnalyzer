@@ -59,16 +59,48 @@ MAHS is an intelligent system that combines social media sentiment, on-chain met
 - Risk balancing
 - Performance tracking
 
+### Memecoin Sniping System
+- **Social Hype Detection**
+  - AI-powered sentiment analysis
+  - Viral keyword tracking
+  - Influencer endorsement monitoring
+  - Engagement spike alerts (>500% in 24h)
+
+- **On-Chain Analytics**
+  - New token launch detection
+  - Smart money wallet tracking
+  - Liquidity analysis
+  - Holder concentration metrics
+
+- **Market Analysis**
+  - Volume/FDV ratio tracking
+  - DEX liquidity monitoring
+  - CEX listing probability
+  - Technical indicators
+
+- **Risk Scoring**
+  - Contract audit automation
+  - Team verification
+  - Community authenticity check
+  - Scam pattern detection
+
+- **Trading Automation**
+  - Sniper bot integration
+  - Auto-buy/sell triggers
+  - Portfolio rebalancing
+  - Risk management
+
 ## Technical Documentation
 
 ### Architecture
 
-The system consists of four core modules:
+The system consists of five core modules:
 
 1. **Data Collection Engine**
    - Social media API integrations
    - Blockchain data collectors
    - Market data aggregators
+   - Influencer tracking system
 
 2. **Analysis Engine**
    - Sentiment analysis system
@@ -88,13 +120,20 @@ The system consists of four core modules:
    - Position tracking
    - Risk management
 
+5. **Sniping System**
+   - Real-time token detection
+   - Smart money tracking
+   - Auto-execution engine
+   - Portfolio optimization
+
 ### Tech Stack
 
 **Backend**
-- Python 3.9+ with FastAPI
+- Python 3.11+ with FastAPI
 - PostgreSQL for data persistence
 - Redis for caching
-- RabbitMQ for message queuing
+- Machine Learning (PyTorch, TensorFlow)
+- Web3 for blockchain interaction
 
 **Frontend**
 - React with TypeScript
@@ -107,6 +146,24 @@ The system consists of four core modules:
 - AWS cloud hosting
 - Kubernetes orchestration
 - GitHub Actions CI/CD
+
+**Data Processing**
+- Pandas for data manipulation
+- NumPy for numerical operations
+- Scikit-learn for ML models
+- TextBlob for sentiment analysis
+
+**Blockchain Integration**
+- Web3.py for Ethereum
+- Solana.py for Solana
+- Brownie for smart contracts
+- CCXT for exchange APIs
+
+**Trading Tools**
+- Technical analysis (TA-Lib)
+- Binance API integration
+- DEX aggregator integration
+- Custom sniper bot framework
 
 ### API Integrations
 
@@ -184,13 +241,35 @@ REDIS_URL=redis://localhost:6379
 
 ## Project Status
 
-Current development phase: Foundation
+Current development phase: Alpha
 - [x] Development environment setup
 - [x] Basic API structure
+- [x] Database models and relationships
+- [x] Core analysis service implementation
 - [ ] Sentiment analysis system
 - [ ] On-chain analysis
 - [ ] Frontend dashboard
 - [ ] Trading integration
+
+## Recent Updates
+
+### 2024-04-03
+1. Fixed SQLAlchemy model issues:
+   - Renamed `metadata` to `coin_metadata` to avoid reserved keyword conflicts
+   - Added proper relationship mappings between models
+   - Added missing imports for SQLAlchemy relationships
+
+2. Implemented comprehensive memecoin analysis:
+   - Added parallel analysis functionality
+   - Implemented contract analysis
+   - Added social scoring system
+   - Integrated risk assessment
+   - Added potential score calculation
+
+3. Enhanced error handling and validation:
+   - Added proper exception handling in analysis service
+   - Improved validation in API endpoints
+   - Added comprehensive logging
 
 ## Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
@@ -208,12 +287,17 @@ MIT License - see [LICENSE.md](LICENSE.md)
 - Core data models for the application
 - Key Models:
   - `Memecoin`: Main token entity with blockchain details and analysis scores
+    - Market data (price, market cap, supply)
+    - Analysis scores (social, security, potential)
+    - Social metrics (followers, engagement)
+    - Additional data (coin_metadata, timestamps)
   - `PriceHistory`: Historical price and volume data
   - `SocialMetrics`: Platform-specific social engagement metrics
   - `Alert`: Notification configurations for price/social movements
-- Enums:
-  - `BlockchainType`: Supported chains (ETHEREUM, BSC, SOLANA)
-  - `MemeStatus`: Token lifecycle states (NEW, ANALYZING, VERIFIED, etc.)
+- Relationships:
+  - One-to-many between Memecoin and PriceHistory
+  - One-to-many between Memecoin and SocialMetrics
+  - One-to-many between Memecoin and Alert
 
 #### API Endpoints (`app/api/api_v1/endpoints/`)
 
@@ -255,37 +339,39 @@ MIT License - see [LICENSE.md](LICENSE.md)
 #### Services (`app/services/`)
 
 **`analysis.py`**
-- Core analysis functionality
-- Key Components:
-  - Contract Analysis
-    - Security pattern detection
-    - Vulnerability scanning
-    - Token distribution analysis
-  - Social Score Calculation
-    - Platform-specific metrics
-    - Engagement analysis
-    - Sentiment scoring
-  - Risk Assessment
-    - Contract risk factors
-    - Liquidity analysis
-    - Holder concentration
-  - Potential Score Computation
-    - Market metrics
-    - Growth indicators
-    - Technical analysis
+- Comprehensive memecoin analysis service
+- Key Features:
+  - Parallel analysis execution
+  - Contract security scanning
+  - Social sentiment calculation
+  - Risk assessment
+  - Potential score computation
+  - CEX listing probability
+  - Viral trend detection
+- Helper Functions:
+  - `analyze_contract`: Smart contract analysis
+  - `calculate_social_score`: Social metrics scoring
+  - `calculate_risk_score`: Risk assessment
+  - `calculate_potential_score`: Overall potential calculation
+  - `generate_analysis_summary`: Human-readable analysis summary
 
 **`memecoin_hunter.py`**
-- Main business logic for memecoin analysis
+- Main business logic for memecoin sniping
 - Features:
   - Social sentiment analysis
   - On-chain metrics tracking
   - Liquidity monitoring
   - Whale wallet detection
+  - Auto-buy execution
+  - Risk management
 - Configuration:
   - Minimum liquidity: $50,000
   - Minimum holders: 500
   - Engagement spike threshold: 500%
   - Whale threshold: 5 wallets
+  - Auto-buy limits: 1-5% portfolio per coin
+  - Stop-loss: 15% from peak
+  - Take-profit: 2x initial investment
 
 #### Configuration (`app/core/`)
 
@@ -383,3 +469,48 @@ MIT License - see [LICENSE.md](LICENSE.md)
 
 - POST /alerts/{id} Create alert
 - GET /alerts/active List active alerts
+
+## Local Development Setup
+
+### Prerequisites
+- Python 3.11+
+- PostgreSQL
+- Redis
+- Virtual Environment (venv)
+
+### Backend Setup
+1. Create and activate virtual environment:
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+3. Set up local PostgreSQL:
+- Install PostgreSQL
+- Create database named 'mahs'
+- Update .env with your database credentials
+
+4. Set up local Redis:
+- Install Redis
+- Default configuration in .env should work (localhost:6379)
+
+5. Run migrations:
+```bash
+alembic upgrade head
+```
+
+6. Start the FastAPI server:
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+The API will be available at:
+- API Documentation: http://localhost:8000/docs
+- Alternative API Documentation: http://localhost:8000/redoc
+- API Root: http://localhost:8000

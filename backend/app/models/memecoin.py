@@ -1,17 +1,17 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, JSON, Enum
+from sqlalchemy import Column, Integer, String, Float, DateTime, Enum, JSON, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from app.db.session import Base
 import enum
-from .base import Base
 
-class BlockchainType(enum.Enum):
+class BlockchainType(str, enum.Enum):
     ETHEREUM = "ethereum"
-    BSC = "binance-smart-chain"
+    BSC = "bsc"
     SOLANA = "solana"
 
-class MemeStatus(enum.Enum):
+class MemeStatus(str, enum.Enum):
     NEW = "new"
     ANALYZING = "analyzing"
-    POTENTIAL = "potential"
     VERIFIED = "verified"
     REJECTED = "rejected"
 
@@ -25,24 +25,29 @@ class Memecoin(Base):
     blockchain = Column(Enum(BlockchainType))
     status = Column(Enum(MemeStatus), default=MemeStatus.NEW)
     
-    # Token Info
+    # Market Data
+    current_price = Column(Float)
+    market_cap = Column(Float)
     total_supply = Column(Float)
-    circulating_supply = Column(Float)
-    holder_count = Column(Integer)
+    holders_count = Column(Integer)
     liquidity_usd = Column(Float)
-    market_cap_usd = Column(Float)
     
-    # Contract Info
-    contract_verified = Column(Boolean, default=False)
-    creator_address = Column(String)
-    creation_tx_hash = Column(String)
-    contract_audit = Column(JSON)  # Store audit results
+    # Analysis Scores
+    social_score = Column(Float)
+    security_score = Column(Float)
+    potential_score = Column(Float)
     
-    # Analysis Data
-    social_score = Column(Float, default=0.0)
-    risk_score = Column(Float, default=0.0)
-    potential_score = Column(Float, default=0.0)
+    # Social Metrics
+    twitter_followers = Column(Integer)
+    telegram_members = Column(Integer)
+    social_mentions = Column(Integer)
+    social_engagement = Column(Integer)
     
+    # Additional Data
+    coin_metadata = Column(JSON)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
     # Relationships
     price_history = relationship("PriceHistory", back_populates="memecoin")
     social_metrics = relationship("SocialMetrics", back_populates="memecoin")

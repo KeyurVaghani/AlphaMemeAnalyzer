@@ -4,22 +4,22 @@ from app.core.config import settings
 from app.api.api_v1.api import api_router
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json"
+    title="Memecoin Alpha Hunter System",
+    description="A sophisticated system for identifying high-potential memecoins using AI-driven analysis",
+    version="1.0.0"
 )
 
-# Set all CORS enabled origins
-if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# CORS middleware configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:8000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
-def root():
-    return {"message": "Welcome to Memecoin Alpha Hunter API"} 
+async def root():
+    return {"message": "Welcome to Memecoin Alpha Hunter System API"} 

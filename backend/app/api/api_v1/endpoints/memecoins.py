@@ -121,4 +121,63 @@ def delete_memecoin(
     
     db.delete(memecoin)
     db.commit()
-    return {"message": "Memecoin deleted successfully"} 
+    return {"message": "Memecoin deleted successfully"}
+
+@router.get("/", response_model=List[MemecoinResponse])
+def get_memecoins(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    """
+    Retrieve memecoins with pagination.
+    """
+    memecoins = db.query(Memecoin).offset(skip).limit(limit).all()
+    return memecoins
+
+@router.post("/", response_model=MemecoinResponse)
+def create_memecoin(
+    memecoin: MemecoinCreate,
+    db: Session = Depends(get_db)
+):
+    """
+    Create a new memecoin.
+    """
+    db_memecoin = Memecoin(**memecoin.dict())
+    db.add(db_memecoin)
+    db.commit()
+    db.refresh(db_memecoin)
+    return db_memecoin
+
+@router.get("/{memecoin_id}", response_model=MemecoinResponse)
+def get_memecoin(
+    memecoin_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get a specific memecoin by ID.
+    """
+    memecoin = db.query(Memecoin).filter(Memecoin.id == memecoin_id).first()
+    if not memecoin:
+        raise HTTPException(status_code=404, detail="Memecoin not found")
+    return memecoin
+
+@router.put("/{memecoin_id}", response_model=MemecoinResponse)
+def update_memecoin(
+    memecoin_id: int,
+    memecoin_update: MemecoinUpdate,
+    db: Session = Depends(get_db)
+):
+    """
+    Update a memecoin.
+    """
+    db_memecoin = db.query(Memecoin).filter(Memecoin.id == memecoin_id).first()
+    if not db_memecoin:
+        raise HTTPException(status_code=404, detail="Memecoin not found")
+    
+    for field, value in memecoin_update.dict(exclude_unset=True).items():
+        setattr(db_memecoin, field, value)
+    
+    db.commit()
+    db.refresh(db_memecoin)
+    return db_memecoin 

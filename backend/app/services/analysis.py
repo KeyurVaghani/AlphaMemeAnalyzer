@@ -5,6 +5,7 @@ from web3 import Web3
 from app.core.config import settings
 from app.models.memecoin import Memecoin, MemeStatus
 from textblob import TextBlob
+from sqlalchemy.orm import Session
 
 async def analyze_contract(memecoin: Memecoin) -> Dict[str, Any]:
     """
@@ -50,29 +51,15 @@ async def analyze_contract(memecoin: Memecoin) -> Dict[str, Any]:
 
 async def calculate_social_score(memecoin: Memecoin) -> float:
     """
-    Calculate social score based on various metrics.
+    Calculate social sentiment score based on various metrics.
     """
-    try:
-        # Get social metrics from different platforms
-        twitter_metrics = await get_twitter_metrics(memecoin.symbol)
-        telegram_metrics = await get_telegram_metrics(memecoin.symbol)
-        reddit_metrics = await get_reddit_metrics(memecoin.symbol)
-        
-        # Calculate weighted scores
-        twitter_score = calculate_platform_score(twitter_metrics, weight=0.4)
-        telegram_score = calculate_platform_score(telegram_metrics, weight=0.3)
-        reddit_score = calculate_platform_score(reddit_metrics, weight=0.3)
-        
-        # Combine scores
-        total_score = twitter_score + telegram_score + reddit_score
-        
-        # Normalize score between 0 and 1
-        normalized_score = min(max(total_score / 100, 0), 1)
-        
-        return normalized_score
-        
-    except Exception as e:
-        return 0.0
+    # Implement social sentiment analysis using Twitter, Telegram, and other data
+    engagement_score = calculate_engagement_score(memecoin)
+    sentiment_score = analyze_social_sentiment(memecoin)
+    growth_score = analyze_community_growth(memecoin)
+    
+    # Weighted average of different components
+    return (engagement_score * 0.4 + sentiment_score * 0.4 + growth_score * 0.2)
 
 async def calculate_risk_score(memecoin: Memecoin) -> float:
     """
@@ -106,33 +93,15 @@ async def calculate_risk_score(memecoin: Memecoin) -> float:
 
 async def calculate_potential_score(memecoin: Memecoin) -> float:
     """
-    Calculate potential score based on various growth indicators.
+    Calculate overall potential score.
     """
-    try:
-        # Market metrics
-        market_score = analyze_market_metrics(memecoin)
-        
-        # Social growth metrics
-        social_growth = analyze_social_growth(memecoin)
-        
-        # Community engagement
-        community_score = analyze_community_engagement(memecoin)
-        
-        # Technical indicators
-        technical_score = analyze_technical_indicators(memecoin)
-        
-        # Calculate weighted potential score
-        potential_score = (
-            market_score * 0.3 +
-            social_growth * 0.3 +
-            community_score * 0.2 +
-            technical_score * 0.2
-        )
-        
-        return potential_score
-        
-    except Exception as e:
-        return 0.0
+    # Implement potential scoring based on various factors
+    liquidity_score = analyze_liquidity(memecoin)
+    holder_score = analyze_holder_distribution(memecoin)
+    market_score = analyze_market_metrics(memecoin)
+    
+    # Weighted average
+    return (liquidity_score * 0.3 + holder_score * 0.3 + market_score * 0.4)
 
 # Helper functions for contract analysis
 def check_ownership_pattern(contract_code: bytes) -> bool:
@@ -220,20 +189,89 @@ def analyze_team_risk(memecoin: Memecoin) -> float:
 # Helper functions for potential analysis
 def analyze_market_metrics(memecoin: Memecoin) -> float:
     """Analyze market-related metrics."""
-    # Implementation would analyze market metrics
-    return 0.7
+    # Implement market metrics analysis
+    return 0.7  # Placeholder
 
-def analyze_social_growth(memecoin: Memecoin) -> float:
-    """Analyze social media growth metrics."""
-    # Implementation would analyze social growth
-    return 0.8
+def analyze_social_sentiment(memecoin: Memecoin) -> float:
+    """
+    Analyze social sentiment from various sources.
+    """
+    # Implement sentiment analysis
+    return 0.7  # Placeholder
 
-def analyze_community_engagement(memecoin: Memecoin) -> float:
-    """Analyze community engagement metrics."""
-    # Implementation would analyze community engagement
-    return 0.6
+def analyze_community_growth(memecoin: Memecoin) -> float:
+    """
+    Analyze community growth rate.
+    """
+    # Implement community growth analysis
+    return 0.6  # Placeholder
 
-def analyze_technical_indicators(memecoin: Memecoin) -> float:
-    """Analyze technical indicators."""
-    # Implementation would analyze technical indicators
-    return 0.7 
+def analyze_liquidity(memecoin: Memecoin) -> float:
+    """
+    Analyze liquidity metrics.
+    """
+    if not memecoin.liquidity_usd:
+        return 0.0
+    
+    return min(1.0, memecoin.liquidity_usd / settings.MIN_LIQUIDITY_USD)
+
+def analyze_holder_distribution(memecoin: Memecoin) -> float:
+    """
+    Analyze holder distribution and concentration.
+    """
+    if not memecoin.holders_count:
+        return 0.0
+    
+    return min(1.0, memecoin.holders_count / settings.MIN_HOLDERS)
+
+def calculate_engagement_score(memecoin: Memecoin) -> float:
+    """
+    Calculate social engagement score.
+    """
+    if not memecoin.social_engagement:
+        return 0.0
+    
+    # Basic scoring based on engagement threshold
+    return min(1.0, memecoin.social_engagement / settings.SOCIAL_ENGAGEMENT_THRESHOLD)
+
+def generate_analysis_summary(social_score: float, security_score: float, potential_score: float) -> str:
+    """
+    Generate a human-readable summary of the analysis.
+    """
+    overall_score = (social_score + security_score + potential_score) / 3
+    
+    if overall_score >= 0.8:
+        return "High potential memecoin with strong community and security metrics"
+    elif overall_score >= 0.6:
+        return "Moderate potential with some promising indicators"
+    else:
+        return "Higher risk investment with limited indicators of success"
+
+async def get_top_potential_coins(db: Session, limit: int = 10) -> list:
+    """Get top potential memecoins."""
+    return []  # Implement actual logic
+
+async def analyze_memecoin(memecoin: Memecoin) -> Dict[str, Any]:
+    """
+    Perform comprehensive analysis of a memecoin.
+    """
+    try:
+        # Run all analysis in parallel
+        contract_analysis = await analyze_contract(memecoin)
+        social_score = await calculate_social_score(memecoin)
+        risk_score = await calculate_risk_score(memecoin)
+        potential_score = await calculate_potential_score(memecoin)
+        
+        # Generate summary
+        summary = generate_analysis_summary(social_score, 1 - risk_score, potential_score)
+        
+        return {
+            "contract_analysis": contract_analysis,
+            "social_score": social_score,
+            "security_score": 1 - risk_score,  # Invert risk score to get security score
+            "potential_score": potential_score,
+            "summary": summary
+        }
+        
+    except Exception as e:
+        raise Exception(f"Analysis failed: {str(e)}") 

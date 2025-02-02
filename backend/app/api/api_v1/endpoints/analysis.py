@@ -7,20 +7,20 @@ from app.services.analysis import (
     analyze_contract,
     calculate_social_score,
     calculate_risk_score,
-    calculate_potential_score
+    calculate_potential_score,
+    analyze_memecoin,
+    get_top_potential_coins
 )
 
 router = APIRouter()
 
 @router.post("/{memecoin_id}/analyze")
-async def analyze_memecoin(
-    *,
-    db: Session = Depends(get_db),
+async def analyze(
     memecoin_id: int,
-    background_tasks: BackgroundTasks
+    db: Session = Depends(get_db)
 ):
     """
-    Trigger comprehensive analysis of a memecoin.
+    Trigger comprehensive analysis for a specific memecoin.
     """
     memecoin = db.query(Memecoin).filter(Memecoin.id == memecoin_id).first()
     if not memecoin:
@@ -30,13 +30,32 @@ async def analyze_memecoin(
     memecoin.status = MemeStatus.ANALYZING
     db.commit()
     
-    # Queue analysis tasks
-    background_tasks.add_task(analyze_contract, memecoin)
-    background_tasks.add_task(calculate_social_score, memecoin)
-    background_tasks.add_task(calculate_risk_score, memecoin)
-    background_tasks.add_task(calculate_potential_score, memecoin)
-    
-    return {"message": "Analysis started"}
+    try:
+        # Perform analysis
+        analysis_result = await analyze_memecoin(memecoin)
+        
+        # Update memecoin with analysis results
+        memecoin.social_score = analysis_result.get("social_score")
+        memecoin.security_score = analysis_result.get("security_score")
+        memecoin.potential_score = analysis_result.get("potential_score")
+        memecoin.status = MemeStatus.VERIFIED
+        
+        db.commit()
+        return analysis_result
+    except Exception as e:
+        memecoin.status = MemeStatus.REJECTED
+        db.commit()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/top-potential")
+async def get_top_coins(
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    """
+    Get top memecoin opportunities based on potential score.
+    """
+    return await get_top_potential_coins(db, limit)
 
 @router.get("/top-potential", response_model=List[dict])
 def get_top_potential(
