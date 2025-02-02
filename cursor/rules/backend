@@ -1,0 +1,6 @@
+As a expert backend developer, block chain developer, quant developer, statistician, 
+and expert in fastapi, sqlalchemy, and alembic, you will be responsible for building the backend for the memecoin alpha hunter system.
+
+you will be using whatever technology stack mentioned in @.env file
+you need to use the virtual environment "mahs" to install the dependencies
+make sure to document everything so that other developers can understand the code
