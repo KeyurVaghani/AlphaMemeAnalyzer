@@ -33,9 +33,9 @@ class Memecoin(Base):
     liquidity_usd = Column(Float)
     
     # Analysis Scores
-    social_score = Column(Float)
-    security_score = Column(Float)
-    potential_score = Column(Float)
+    social_score = Column(Float)  # 0 to 1
+    security_score = Column(Float)  # 0 to 1
+    potential_score = Column(Float)  # 0 to 1
     
     # Social Metrics
     twitter_followers = Column(Integer)
@@ -47,11 +47,23 @@ class Memecoin(Base):
     coin_metadata = Column(JSON)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-
+    
+    # Alpha Score Components
+    viral_score = Column(Float)  # 0 to 1
+    whale_confidence = Column(Float)  # 0 to 1
+    smart_money_rating = Column(Float)  # 0 to 1
+    community_growth = Column(Float)  # 0 to 1
+    listing_probability = Column(Float)  # 0 to 1
+    
+    # Risk Metrics
+    is_honeypot = Column(Boolean, default=False)
+    rugpull_risk = Column(Float)  # 0 to 1
+    
     # Relationships
-    price_history = relationship("PriceHistory", back_populates="memecoin")
-    social_metrics = relationship("SocialMetrics", back_populates="memecoin")
-    alerts = relationship("Alert", back_populates="memecoin")
+    social_metrics = relationship("SocialMetrics", back_populates="memecoin", cascade="all, delete-orphan")
+    chain_analysis = relationship("ChainAnalysis", back_populates="memecoin", cascade="all, delete-orphan")
+    price_history = relationship("PriceHistory", back_populates="memecoin", cascade="all, delete-orphan")
+    alerts = relationship("Alert", back_populates="memecoin", cascade="all, delete-orphan")
 
 class PriceHistory(Base):
     __tablename__ = "price_history"

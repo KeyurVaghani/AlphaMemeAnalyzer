@@ -1,6 +1,6 @@
-from typing import List, Optional, Union
-from pydantic_settings import BaseSettings
-from pydantic import AnyHttpUrl, validator
+from typing import List, Optional, Union, Dict, Any
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import AnyHttpUrl, field_validator
 import os
 from dotenv import load_dotenv
 
@@ -11,9 +11,9 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Memecoin Alpha Hunter System"
     
     # CORS Configuration
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:8000"]
 
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
+    @field_validator("BACKEND_CORS_ORIGINS", mode='before')
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
@@ -28,11 +28,18 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "mahs")
     SQLALCHEMY_DATABASE_URI: Optional[str] = None
 
-    @validator("SQLALCHEMY_DATABASE_URI", pre=True)
-    def assemble_db_connection(cls, v: Optional[str], values: dict) -> str:
+    @field_validator("SQLALCHEMY_DATABASE_URI", mode='before')
+    def assemble_db_connection(cls, v: Optional[str], info: Dict[str, Any]) -> str:
         if v:
             return v
-        return f"postgresql://{values['POSTGRES_USER']}:{values['POSTGRES_PASSWORD']}@{values['POSTGRES_SERVER']}/{values['POSTGRES_DB']}"
+        
+        # Get values from the model's data
+        user = os.getenv("POSTGRES_USER", "postgres")
+        password = os.getenv("POSTGRES_PASSWORD", "password")
+        server = os.getenv("POSTGRES_SERVER", "localhost")
+        db = os.getenv("POSTGRES_DB", "mahs")
+        
+        return f"postgresql://{user}:{password}@{server}/{db}"
 
     # Redis
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
@@ -75,8 +82,10 @@ class Settings(BaseSettings):
     VOLUME_SPIKE_THRESHOLD: float = float(os.getenv("VOLUME_SPIKE_THRESHOLD", "2.0"))
     SOCIAL_ENGAGEMENT_THRESHOLD: int = int(os.getenv("SOCIAL_ENGAGEMENT_THRESHOLD", "1000"))
     
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
+    model_config = SettingsConfigDict(
+        case_sensitive=True,
+        env_file=".env",
+        env_file_encoding="utf-8"
+    )
 
 settings = Settings() 
