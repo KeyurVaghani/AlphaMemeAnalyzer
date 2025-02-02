@@ -1,126 +1,133 @@
 # Memecoin Alpha Hunter System (MAHS)
 
-A sophisticated system for identifying high-potential memecoins before significant price movements using AI-driven analysis, on-chain data, and social sentiment tracking.
+A sophisticated system for identifying high-potential memecoins using AI-driven analysis, on-chain data, and social sentiment tracking.
 
-## System Architecture
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Technical Documentation](#technical-documentation)
+  - [Architecture](#architecture)
+  - [Tech Stack](#tech-stack)
+  - [API Integrations](#api-integrations)
+- [Developer Guide](#developer-guide)
+  - [Getting Started](#getting-started)
+  - [Codebase Structure](#codebase-structure)
+- [Project Status](#project-status)
+- [Contributing](#contributing)
+- [License](#license)
+- [Detailed Code Documentation](#detailed-code-documentation)
+  - [Core Components](#core-components)
+    - [Database Models (`app/models/`)](#database-models-appmodels)
+    - [API Endpoints (`app/api/api_v1/endpoints/`)](#api-endpoints-appapiapiv1endpoints)
+    - [Services (`app/services/`)](#services-appservices)
+    - [Configuration (`app/core/`)](#configuration-appcore)
+  - [Infrastructure](#infrastructure)
+    - [`docker-compose.yml`](#dockercomposeyml)
+    - [`Dockerfile`](#dockerfile)
+  - [Dependencies (`requirements.txt`)](#dependencies-requirementstxt)
+  - [API Structure](#api-structure)
+    - [Base URL: `/api/v1`](#base-url-apiv1)
+    - [Memecoin Endpoints](#memecoin-endpoints)
 
-### 1. Core Modules
+## Overview
 
-#### 1.1 Social Hype Monitoring Module
-- Real-time social media sentiment analysis
-- Influencer tracking and wallet correlation
+MAHS is an intelligent system that combines social media sentiment, on-chain metrics, and market data to identify promising memecoin opportunities before significant price movements occur.
+
+## Features
+
+### Social Analysis
+- Real-time sentiment tracking across Twitter, Reddit, and Telegram
+- Influencer activity monitoring
 - Engagement spike detection
-- Integration with Twitter, Reddit, and Telegram APIs
+- Community growth analytics
 
-#### 1.2 On-Chain Analysis Engine
-- New token launch detection
-- Smart money wallet tracking
+### On-Chain Analysis
+- Smart contract security scanning
 - Liquidity analysis
-- Contract verification
+- Holder distribution tracking
+- Whale wallet monitoring
 
-#### 1.3 Market Analytics Dashboard
-- Volume/FDV ratio tracking
-- Holder growth monitoring
-- DEX liquidity analysis
-- CEX listing probability prediction
-
-#### 1.4 Risk Assessment Module
-- Contract security scanning
+### Risk Assessment
+- Contract vulnerability detection
 - Team verification
-- Community authenticity check
-- Scam detection algorithms
+- Scam pattern recognition
+- Community authenticity checks
 
-#### 1.5 Execution Toolkit
-- Automated trading integration
+### Trading Tools
+- Automated DEX integration
 - Portfolio management
 - Risk balancing
 - Performance tracking
 
-### 2. Technical Stack
+## Technical Documentation
 
-#### 2.1 Backend
-- Language: Python 3.9+
-- Framework: FastAPI
-- Database: PostgreSQL
-- Cache: Redis
-- Queue: RabbitMQ
+### Architecture
 
-#### 2.2 Frontend
-- Framework: React with TypeScript
-- State Management: Redux Toolkit
-- UI Components: Material-UI
-- Charts: TradingView Technical Analysis
+The system consists of four core modules:
 
-#### 2.3 Infrastructure
-- Cloud: AWS
-- Containers: Docker
-- Orchestration: Kubernetes
-- CI/CD: GitHub Actions
+1. **Data Collection Engine**
+   - Social media API integrations
+   - Blockchain data collectors
+   - Market data aggregators
 
-### 3. Data Sources & APIs
+2. **Analysis Engine**
+   - Sentiment analysis system
+   - On-chain metrics processor
+   - Risk assessment models
+   - Scoring algorithms
 
-#### 3.1 Blockchain Data
-- DexScreener API
-- Etherscan/BSCScan APIs
-- Solana RPC nodes
-- Nansen API
+3. **Alert System**
+   - Price movement detection
+   - Social spike monitoring
+   - Risk factor notifications
+   - Portfolio alerts
 
-#### 3.2 Social Data
-- Twitter API v2
-- Reddit API
-- Telegram Bot API
-- Discord Bot API
+4. **Trading Integration**
+   - DEX interaction layer
+   - Order management
+   - Position tracking
+   - Risk management
 
-#### 3.3 Market Data
-- CoinGecko API
-- DexTools API
-- LunarCrush API
-- CoinMarketCap API
+### Tech Stack
 
-## Implementation Roadmap
+**Backend**
+- Python 3.9+ with FastAPI
+- PostgreSQL for data persistence
+- Redis for caching
+- RabbitMQ for message queuing
 
-### Phase 1: Foundation (Weeks 1-2)
-- [ ] Set up development environment
-- [ ] Initialize backend and frontend projects
-- [ ] Set up database schema
-- [ ] Implement basic API structure
-- [ ] Create authentication system
+**Frontend**
+- React with TypeScript
+- Redux Toolkit
+- Material-UI
+- TradingView charts
 
-### Phase 2: Data Collection (Weeks 3-4)
-- [ ] Implement blockchain data collectors
-- [ ] Set up social media API integrations
-- [ ] Create market data aggregators
-- [ ] Build data processing pipeline
+**Infrastructure**
+- Docker containers
+- AWS cloud hosting
+- Kubernetes orchestration
+- GitHub Actions CI/CD
 
-### Phase 3: Analysis Engine (Weeks 5-6)
-- [ ] Develop sentiment analysis system
-- [ ] Implement on-chain analysis algorithms
-- [ ] Create risk assessment models
-- [ ] Build scoring system
+### API Integrations
 
-### Phase 4: Frontend Development (Weeks 7-8)
-- [ ] Design and implement dashboard UI
-- [ ] Create real-time charts and graphs
-- [ ] Build alert system
-- [ ] Implement portfolio management interface
+**Blockchain**
+- DexScreener
+- Etherscan/BSCScan
+- Solana RPC
+- Nansen
 
-### Phase 5: Trading Integration (Weeks 9-10)
-- [ ] Implement DEX integration
-- [ ] Create trading bot framework
-- [ ] Build risk management system
-- [ ] Develop portfolio balancing logic
+**Market Data**
+- CoinGecko
+- DexTools
+- LunarCrush
+- CoinMarketCap
 
-### Phase 6: Testing & Optimization (Weeks 11-12)
-- [ ] Perform security audits
-- [ ] Optimize performance
-- [ ] Conduct backtesting
-- [ ] Beta testing with limited users
+## Developer Guide
 
-## Getting Started
+### Getting Started
 
-### Prerequisites
+1. **Prerequisites**
 ```bash
-# Required software
 - Python 3.9+
 - Node.js 16+
 - Docker
@@ -128,7 +135,7 @@ A sophisticated system for identifying high-potential memecoins before significa
 - Redis
 ```
 
-### Installation
+2. **Installation**
 ```bash
 # Clone repository
 git clone https://github.com/yourusername/memecoin-alpha-hunter.git
@@ -144,8 +151,8 @@ cd frontend
 npm install
 ```
 
-### Configuration
-Create a `.env` file in the root directory:
+3. **Configuration**
+Create `.env` file:
 ```env
 # API Keys
 TWITTER_API_KEY=your_key
@@ -160,13 +167,219 @@ DATABASE_URL=postgresql://user:password@localhost:5432/mahs
 REDIS_URL=redis://localhost:6379
 ```
 
+### Codebase Structure
+
+**Backend Components**
+- `app/main.py` - Application entry point
+- `app/core/` - Core configuration and settings
+- `app/api/` - API endpoints and routing
+- `app/services/` - Business logic implementation
+- `app/models/` - Database models and schemas
+- `app/db/` - Database configuration
+
+**Key Services**
+- `memecoin_hunter.py` - Core analysis engine
+- `analysis.py` - Risk assessment service
+- `notifications.py` - Alert system
+
+## Project Status
+
+Current development phase: Foundation
+- [x] Development environment setup
+- [x] Basic API structure
+- [ ] Sentiment analysis system
+- [ ] On-chain analysis
+- [ ] Frontend dashboard
+- [ ] Trading integration
+
 ## Contributing
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+MIT License - see [LICENSE.md](LICENSE.md)
 
-## Acknowledgments
-- CryptoGodJohn for trading strategies
-- DexScreener for DEX data
-- LunarCrush for social metrics 
+## Detailed Code Documentation
+
+### Core Components
+
+#### Database Models (`app/models/`)
+
+**`memecoin.py`**
+- Core data models for the application
+- Key Models:
+  - `Memecoin`: Main token entity with blockchain details and analysis scores
+  - `PriceHistory`: Historical price and volume data
+  - `SocialMetrics`: Platform-specific social engagement metrics
+  - `Alert`: Notification configurations for price/social movements
+- Enums:
+  - `BlockchainType`: Supported chains (ETHEREUM, BSC, SOLANA)
+  - `MemeStatus`: Token lifecycle states (NEW, ANALYZING, VERIFIED, etc.)
+
+#### API Endpoints (`app/api/api_v1/endpoints/`)
+
+**`memecoins.py`**
+- CRUD operations for memecoin management
+- Endpoints:
+  - `POST /`: Create new memecoin tracking
+  - `GET /`: List memecoins with filtering options
+  - `GET /{memecoin_id}`: Detailed memecoin information
+  - `PUT /{memecoin_id}`: Update memecoin data
+
+**`analysis.py`**
+- Memecoin analysis and scoring endpoints
+- Key Features:
+  - Contract analysis
+  - Social sentiment calculation
+  - Risk assessment
+  - Potential score computation
+- Endpoints:
+  - `POST /{memecoin_id}/analyze`: Trigger comprehensive analysis
+  - `GET /top-potential`: List high-potential tokens
+  - `GET /{memecoin_id}/risk-factors`: Detailed risk analysis
+  - `GET /market-sentiment`: Overall market metrics
+
+**`social.py`**
+- Social media metrics management
+- Endpoints:
+  - `POST /metrics`: Record new social metrics
+  - `GET /metrics/{memecoin_id}`: Retrieve historical metrics
+- Supports multiple platforms (Twitter, Telegram, Reddit)
+
+**`alerts.py`**
+- Alert system configuration and management
+- Endpoints:
+  - `POST /{memecoin_id}`: Create new price/social alert
+  - `GET /active`: List all active alerts
+- Supports multiple notification channels
+
+#### Services (`app/services/`)
+
+**`analysis.py`**
+- Core analysis functionality
+- Key Components:
+  - Contract Analysis
+    - Security pattern detection
+    - Vulnerability scanning
+    - Token distribution analysis
+  - Social Score Calculation
+    - Platform-specific metrics
+    - Engagement analysis
+    - Sentiment scoring
+  - Risk Assessment
+    - Contract risk factors
+    - Liquidity analysis
+    - Holder concentration
+  - Potential Score Computation
+    - Market metrics
+    - Growth indicators
+    - Technical analysis
+
+**`memecoin_hunter.py`**
+- Main business logic for memecoin analysis
+- Features:
+  - Social sentiment analysis
+  - On-chain metrics tracking
+  - Liquidity monitoring
+  - Whale wallet detection
+- Configuration:
+  - Minimum liquidity: $50,000
+  - Minimum holders: 500
+  - Engagement spike threshold: 500%
+  - Whale threshold: 5 wallets
+
+#### Configuration (`app/core/`)
+
+**`config.py`**
+- Application configuration management
+- Settings:
+  - API versioning
+  - CORS configuration
+  - Database connections
+  - External service credentials
+- Environment Variables:
+  - Database configuration
+  - API keys
+  - Service endpoints
+
+### Infrastructure
+
+**`docker-compose.yml`**
+- Container orchestration
+- Services:
+  - Backend (FastAPI)
+  - PostgreSQL database
+  - Redis cache
+  - pgAdmin interface
+- Network Configuration:
+  - Internal network: mahs-network
+  - Exposed ports:
+    - Backend: 8000
+    - Database: 5432
+    - Redis: 6379
+    - pgAdmin: 5050
+
+**`Dockerfile`**
+- Backend service configuration
+- Base Image: Python 3.9-slim
+- Dependencies:
+  - System packages
+  - Python requirements
+  - Development tools
+- Runtime Configuration:
+  - Working directory: /app
+  - Environment variables
+  - Entry point: uvicorn
+
+### Dependencies (`requirements.txt`)
+
+**Core Framework**
+- FastAPI 0.104.1
+- Uvicorn 0.24.0
+- SQLAlchemy 2.0.23
+- Alembic 1.12.1
+
+**External APIs**
+- Tweepy 4.14.0
+- Python-Telegram-Bot 20.6
+- PRAW 7.7.1
+- Web3 6.11.1
+
+**Data Processing**
+- Pandas 2.1.3
+- NumPy 1.26.2
+- Scikit-learn 1.3.2
+- TextBlob 0.17.1
+
+**Development Tools**
+- Black 23.11.0
+- Flake8 6.1.0
+- isort 5.12.0
+- pytest 7.4.3
+
+### API Structure
+
+#### Base URL: `/api/v1`
+
+**Memecoin Endpoints**
+
+- POST /memecoins Create new memecoin
+- GET /memecoins List memecoins
+- GET /memecoins/{id} Get memecoin details
+- PUT /memecoins/{id} Update memecoin
+
+**Analysis Endpoints**
+
+- POST /analysis/{id}/analyze Trigger analysis
+- GET /analysis/top-potential Get top tokens
+- GET /analysis/{id}/risk-factors Get risk analysis
+- GET /analysis/market-sentiment Get market overview
+
+**Social Endpoints**
+
+- POST /social/metrics Record metrics
+- GET /social/metrics/{id} Get historical data
+
+**Alert Endpoints**
+
+- POST /alerts/{id} Create alert
+- GET /alerts/active List active alerts
