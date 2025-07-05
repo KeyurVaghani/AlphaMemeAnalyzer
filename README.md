@@ -1,4 +1,4 @@
-# Memecoins Alpha Hunter System (MAHS)
+# Memecoin Alpha Hunter System (MAHS)
 
 A sophisticated system for identifying high-potential memecoins using AI-driven analysis, on-chain data, and social sentiment tracking.
 
